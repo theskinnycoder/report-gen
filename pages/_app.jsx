@@ -1,15 +1,15 @@
 import {
   AppShell,
+  ColorSchemeProvider,
   Header,
   MantineProvider,
-  Title,
-  ColorSchemeProvider,
-  Group,
   Switch,
+  Title,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
-import { useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
+import Head from "next/head";
+import { useState } from "react";
 import { TbMoonStars as MoonIcon, TbSun as SunIcon } from "react-icons/tb";
 
 export default function App(props) {
@@ -27,66 +27,76 @@ export default function App(props) {
   };
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          fontFamily: "SF Pro Text, sans-serif",
-          headings: { fontFamily: "SF Pro Display, sans-serif" },
-          colorScheme,
-          primaryColor: "cyan",
-        }}
+    <>
+      <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
       >
-        <AppShell
-          padding="xl"
-          header={
-            <Header
-              height={60}
-              p={40}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Title
-                component={NextLink}
-                href="/"
-                size="h4"
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={{
+            fontFamily: "Poppins, SF Pro Text, sans-serif",
+            headings: { fontFamily: "Poppins, SF Pro Display, sans-serif" },
+            colorScheme,
+            primaryColor: "cyan",
+          }}
+        >
+          <AppShell
+            padding="xl"
+            header={
+              <Header
+                height={60}
+                p={40}
                 sx={{
-                  fontWeight: "bold",
-                  letterSpacing: "0.5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                blip.
-              </Title>
-              <Switch
-                checked={colorScheme === "dark"}
-                onChange={() => toggleColorScheme()}
-                color="gray"
-                size="lg"
-                onLabel={<SunIcon size="20" color="#fff" />}
-                offLabel={<MoonIcon size="20" color="#495057" />}
-              />
-            </Header>
-          }
-          styles={(theme) => ({
-            main: {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Component {...pageProps} />
-        </AppShell>
-      </MantineProvider>
-    </ColorSchemeProvider>
+                <Title
+                  component={NextLink}
+                  href="/"
+                  size="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    letterSpacing: "0.5",
+                  }}
+                >
+                  blip.
+                </Title>
+                <Switch
+                  checked={colorScheme === "dark"}
+                  onChange={() => toggleColorScheme()}
+                  color="gray"
+                  size="lg"
+                  onLabel={<SunIcon size="20" color="#fff" />}
+                  offLabel={<MoonIcon size="20" color="#495057" />}
+                />
+              </Header>
+            }
+            styles={(theme) => ({
+              main: {
+                backgroundColor:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[8]
+                    : theme.colors.gray[0],
+              },
+            })}
+          >
+            <Component {...pageProps} />
+          </AppShell>
+        </MantineProvider>
+      </ColorSchemeProvider>
+    </>
   );
 }
 

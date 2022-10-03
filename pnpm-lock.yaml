@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@emotion/react': ^11.10.4
   '@emotion/server': ^11.10.0
+  '@googleapis/docs': ^1.0.1
   '@googleapis/sheets': ^3.0.2
   '@mantine/core': ^5.4.2
   '@mantine/dropzone': ^5.4.2
@@ -23,6 +24,7 @@ specifiers:
 dependencies:
   '@emotion/react': 11.10.4_react@18.2.0
   '@emotion/server': 11.10.0
+  '@googleapis/docs': 1.0.1
   '@googleapis/sheets': 3.0.2
   '@mantine/core': 5.4.2_avizss4y7enqfazm7itl7dw6mm
   '@mantine/dropzone': 5.4.2_erck44oykgkn35r7t2stiiophq
@@ -739,6 +741,16 @@ packages:
       '@floating-ui/dom': 1.0.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@googleapis/docs/1.0.1:
+    resolution: {integrity: sha512-oJvNEcUkYZ+u97sOM2nRX55+MlPhILwETtvg1ZdvnhtY0tLpCVUnV3Y2+F/SSM3ZKU8dHLnb2D9qrtT7OBfPpA==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      googleapis-common: 5.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
     dev: false
 
   /@googleapis/sheets/3.0.2:

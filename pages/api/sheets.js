@@ -3,6 +3,7 @@ import { auth, sheets } from "@googleapis/sheets";
 export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
+      console.log(process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"));
       const authService = new auth.GoogleAuth({
         projectId: process.env.GOOGLE_PROJECT_ID,
         credentials: {
