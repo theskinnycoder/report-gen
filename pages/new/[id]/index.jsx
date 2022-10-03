@@ -131,7 +131,7 @@ export default function EditFeedbackPage() {
                             What you did well
                           </Title>
                           {document[key]?.didWell.length >= 1 && (
-                            <Stack spacing="lg">
+                            <Stack spacing="xs">
                               {document[key]?.didWell.map((item, idx) => (
                                 <DidWellParagraph
                                   key={item?.id}

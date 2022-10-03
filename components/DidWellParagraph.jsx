@@ -42,7 +42,6 @@ export default function DidWellParagraph({
           <Stack
             spacing="md"
             p="md"
-            mb="xs"
             sx={{
               border: "1.5px solid",
               borderColor: theme.colors.green,
