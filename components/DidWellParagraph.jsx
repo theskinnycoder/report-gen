@@ -1,124 +1,66 @@
 import {
   ActionIcon,
   Button,
-  FileInput,
   Group,
   Stack,
   Text,
-  Textarea,
   useMantineTheme,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { FiSave as SaveIcon } from "react-icons/fi";
 import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb";
-import useFeedBack from "../hooks/use-feed-back";
+import RichTextEditor from "./RichTextEditor";
 
-export default function DidWellParagraph({ data }) {
-  const {
-    removeParagraph,
-    commitParagraph,
-    makeParagraphStale,
-    getStaleParagraph,
-    getParagraph,
-    feedback,
-  } = useFeedBack();
+export default function DidWellParagraph({
+  data,
+  removeParagraph,
+  commitParagraph,
+  count,
+}) {
+  const [text, setText] = useState(data.text);
+
+  useEffect(() => {
+    setText(data.text);
+  }, [data.text]);
 
   const theme = useMantineTheme();
 
-  const localItem = useMemo(
-    () => getParagraph(data.section, data.type, data.id),
-    [getParagraph, data.id, data.section, data.type]
-  );
-
-  const form = useForm({
-    initialValues: {
-      screenshot: localItem.screenshot,
-      text: localItem.text,
-    },
-    validate: {
-      text: (value) => (!value ? "Explanation Text must not be empty" : null),
-    },
-  });
-
   return (
     <>
-      {getStaleParagraph(data.section)?.id === data.id ? (
+      {data.stale ? (
         <form
-          onSubmit={form.onSubmit((values) => {
-            commitParagraph(data.id, { ...localItem, ...values });
-          })}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            await commitParagraph(data.id, {
+              ...data,
+              screenshot: data.screenshot,
+              text,
+              stale: false,
+            });
+          }}
         >
           <Stack
             spacing="md"
             p="md"
             mb="xs"
             sx={{
-              position: "relative",
               border: "1.5px solid",
               borderColor: theme.colors.green,
-              borderRadius: "4px",
+              borderRadius: theme.radius.sm,
             }}
           >
-            <Group
-              spacing="xs"
-              position="right"
+            <Stack
+              p="xs"
               sx={{
-                position: "absolute",
-                top: "0px",
-                right: "18px",
-                transform: "translate(50%, -50%)",
+                border: "1.5px solid",
+                borderColor: theme.colors.gray,
+                borderRadius: theme.radius.sm,
               }}
             >
-              {!getStaleParagraph(data.section) && (
-                <ActionIcon
-                  onClick={() =>
-                    makeParagraphStale(data.section, data.type, data.id)
-                  }
-                  radius="xl"
-                  variant="filled"
-                  size="md"
-                >
-                  <IconEdit size={18} />
-                </ActionIcon>
-              )}
-              <ActionIcon
-                onClick={() =>
-                  removeParagraph(data.section, data.type, data.id)
-                }
-                radius="xl"
-                variant="filled"
-                size="md"
-              >
-                <IconX size={18} />
-              </ActionIcon>
-            </Group>
+              <img src={data.screenshot} alt="" />
+            </Stack>
 
-            <FileInput
-              placeholder="Pick Image"
-              label="Screen Shot"
-              variant="filled"
-              size="md"
-              withAsterisk
-              labelProps={{
-                sx: {
-                  marginBottom: theme.spacing.xs,
-                },
-              }}
-              {...form.getInputProps("screenshot")}
-            />
-
-            <Textarea
-              minRows={5}
-              label="What you did well"
-              labelProps={{
-                sx: {
-                  marginBottom: theme.spacing.xs,
-                },
-              }}
-              withAsterisk
-              {...form.getInputProps("text")}
-            />
+            <RichTextEditor value={text} onChange={(value) => setText(value)} />
 
             <Button
               sx={{
@@ -140,7 +82,7 @@ export default function DidWellParagraph({ data }) {
             position: "relative",
             border: "1.5px solid",
             borderColor: theme.colors.green,
-            borderRadius: "4px",
+            borderRadius: theme.radius.sm,
           }}
         >
           <Group
@@ -153,20 +95,23 @@ export default function DidWellParagraph({ data }) {
               transform: "translate(50%, -50%)",
             }}
           >
-            {!getStaleParagraph(data.section) && (
-              <ActionIcon
-                onClick={() =>
-                  makeParagraphStale(data.section, data.type, data.id)
-                }
-                radius="xl"
-                variant="filled"
-                size="md"
-              >
-                <IconEdit size={18} />
-              </ActionIcon>
-            )}
             <ActionIcon
-              onClick={() => removeParagraph(data.section, data.type, data.id)}
+              onClick={async () => {
+                await commitParagraph(data.id, {
+                  ...data,
+                  stale: true,
+                });
+              }}
+              radius="xl"
+              variant="filled"
+              size="md"
+            >
+              <IconEdit size={18} />
+            </ActionIcon>
+            <ActionIcon
+              onClick={async () =>
+                await removeParagraph(data.section, data.type, data.id)
+              }
               radius="xl"
               variant="filled"
               size="md"
@@ -175,12 +120,7 @@ export default function DidWellParagraph({ data }) {
             </ActionIcon>
           </Group>
 
-          <Text>
-            What you did well -{" "}
-            {feedback[data.section].didWell.findIndex(
-              (elem) => elem.id === data.id
-            ) + 1}
-          </Text>
+          <Text>What you did well - {count}</Text>
         </Stack>
       )}
     </>

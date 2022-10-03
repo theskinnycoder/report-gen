@@ -1,166 +1,105 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { v4 } from "uuid";
-import { FeedBackItemsContext } from "../contexts/FeedBackItemsContext";
-import { SECTIONS } from "../utils/constants";
+import useDocument from "./use-document";
 
-export default function useFeedBack() {
-  const { feedback, setFeedback } = useContext(FeedBackItemsContext);
-
-  const createReport = useCallback(
-    (name) => {
-      const id = v4();
-      setFeedback({
-        id,
-        name,
-        introduction: "",
-        overallFeedback: "",
-        [SECTIONS.EMPATHIZE]: {
-          mistakes: [],
-          didWell: [],
-        },
-        [SECTIONS.DEFINE]: {
-          mistakes: [],
-          didWell: [],
-        },
-        [SECTIONS.IDEATE]: {
-          mistakes: [],
-          didWell: [],
-        },
-        [SECTIONS.PROTOTYPE]: {
-          mistakes: [],
-          didWell: [],
-        },
-        [SECTIONS.TESTING]: {
-          mistakes: [],
-          didWell: [],
-        },
-      });
-      return id;
-    },
-    [setFeedback]
-  );
+export default function useFeedBack(id) {
+  const { updateDocument, document, loading } = useDocument("reports", id);
 
   const addNewParagraph = useCallback(
-    (section, type) => {
+    async (section, type) => {
+      const id = v4();
       const newItem =
         type === "mistakes"
           ? {
-              id: v4(),
+              id,
               screenshot: "",
               explanationText: "",
               overcomeText: "",
-              variables: [],
               section,
               type,
               stale: true,
             }
           : {
-              id: v4(),
+              id,
               screenshot: "",
               text: "",
-              variables: [],
               section,
               type,
               stale: true,
             };
-      setFeedback((prev) => ({
-        ...prev,
+      await updateDocument({
+        ...document,
         [section]: {
-          ...prev[section],
-          [type]: [...prev[section][type], newItem],
+          ...document[section],
+          [type]: [...document[section][type], newItem],
         },
-      }));
+      });
+      return id;
     },
-    [setFeedback]
+    [document, updateDocument]
   );
 
   const removeParagraph = useCallback(
-    (section, type, id) => {
-      setFeedback((prev) => ({
-        ...prev,
+    async (section, type, id) => {
+      await updateDocument({
+        ...document,
         [section]: {
-          ...prev[section],
-          [type]: prev[section][type].filter((para) => para.id !== id),
+          ...document[section],
+          [type]: document[section][type].filter((para) => para.id !== id),
         },
-      }));
+      });
     },
-    [setFeedback]
+    [document, updateDocument]
   );
 
   const commitParagraph = useCallback(
-    (id, newValue) => {
-      setFeedback((prev) => ({
-        ...prev,
+    async (id, newValue) => {
+      await updateDocument({
+        ...document,
         [newValue.section]: {
-          ...prev[newValue.section],
-          [newValue.type]: prev[newValue.section][newValue.type].map((item) =>
-            item.id === id ? { ...newValue, stale: false } : item
+          ...document[newValue.section],
+          [newValue.type]: document?.[newValue?.section]?.[newValue?.type].map(
+            (item) => (item?.id === id ? newValue : item)
           ),
         },
-      }));
+      });
     },
-    [setFeedback]
-  );
-
-  const makeParagraphStale = useCallback(
-    (section, type, id) => {
-      setFeedback((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [type]: prev[section][type].map((item) =>
-            item.id === id ? { ...item, stale: true } : item
-          ),
-        },
-      }));
-    },
-    [setFeedback]
-  );
-
-  const getStaleParagraph = useCallback(
-    (section) => {
-      return [feedback[section].mistakes, feedback[section].didWell]
-        .flatMap((elem) => elem)
-        .find((item) => item.stale === true);
-    },
-    [feedback]
+    [document, updateDocument]
   );
 
   const getParagraph = useCallback(
     (section, type, id) => {
-      return feedback[section][type].find((item) => item.id === id);
+      return document[section]?.[type]?.find((item) => item?.id === id);
     },
-    [feedback]
+    [document]
   );
 
   const addIntroduction = useCallback(
-    (text) => {
-      setFeedback((prev) => ({
-        ...prev,
+    async (text) => {
+      await updateDocument({
+        ...document,
         introduction: text,
-      }));
+      });
     },
-    [setFeedback]
+    [document, updateDocument]
   );
 
   const addOverallFeedback = useCallback(
-    (text) => {
-      setFeedback((prev) => ({
-        ...prev,
+    async (text) => {
+      await updateDocument({
+        ...document,
         overallFeedback: text,
-      }));
+      });
     },
-    [setFeedback]
+    [document, updateDocument]
   );
 
   return {
-    feedback,
-    createReport,
+    document,
+    loading,
     addNewParagraph,
     removeParagraph,
     commitParagraph,
-    makeParagraphStale,
-    getStaleParagraph,
     getParagraph,
     addIntroduction,
     addOverallFeedback,

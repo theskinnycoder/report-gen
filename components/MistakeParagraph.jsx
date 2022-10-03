@@ -8,50 +8,38 @@ import {
   Textarea,
   useMantineTheme,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useMemo } from "react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { FiSave as SaveIcon } from "react-icons/fi";
 import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb";
 import useFeedBack from "../hooks/use-feed-back";
 
 export default function MistakeParagraph({ data }) {
-  const {
-    removeParagraph,
-    commitParagraph,
-    makeParagraphStale,
-    getStaleParagraph,
-    getParagraph,
-    feedback,
-  } = useFeedBack();
+  const { query } = useRouter();
+  const { document, loading, removeParagraph, commitParagraph } = useFeedBack(
+    query.id
+  );
+
+  const [screenshot, setScreenshot] = useState(data.screenshot);
+  const [explanationText, setExplanationText] = useState(data.explanationText);
+  const [overcomeText, setOvercomeText] = useState(data.overcomeText);
 
   const theme = useMantineTheme();
 
-  const localItem = useMemo(
-    () => getParagraph(data.section, data.type, data.id),
-    [getParagraph, data.id, data.section, data.type]
-  );
-
-  const form = useForm({
-    initialValues: {
-      screenshot: localItem.screenshot,
-      explanationText: localItem.explanationText,
-      overcomeText: localItem.overcomeText,
-    },
-    validate: {
-      explanationText: (value) =>
-        !value ? "Explanation Text must not be empty" : null,
-      overcomeText: (value) =>
-        !value ? "Overcome Text must not be empty" : null,
-    },
-  });
-
   return (
     <>
-      {getStaleParagraph(data.section)?.id === data.id ? (
+      {data.stale ? (
         <form
-          onSubmit={form.onSubmit((values) => {
-            commitParagraph(data.id, { ...localItem, ...values });
-          })}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            await commitParagraph(data.id, {
+              ...data,
+              screenshot,
+              explanationText,
+              overcomeText,
+              stale: false,
+            });
+          }}
         >
           <Stack
             spacing="md"
@@ -64,40 +52,6 @@ export default function MistakeParagraph({ data }) {
               borderRadius: "4px",
             }}
           >
-            <Group
-              spacing="xs"
-              position="right"
-              sx={{
-                position: "absolute",
-                top: "0px",
-                right: "18px",
-                transform: "translate(50%, -50%)",
-              }}
-            >
-              {!getStaleParagraph(data.section) && (
-                <ActionIcon
-                  onClick={() =>
-                    makeParagraphStale(data.section, data.type, data.id)
-                  }
-                  radius="xl"
-                  variant="filled"
-                  size="md"
-                >
-                  <IconEdit size={18} />
-                </ActionIcon>
-              )}
-              <ActionIcon
-                onClick={() =>
-                  removeParagraph(data.section, data.type, data.id)
-                }
-                radius="xl"
-                variant="filled"
-                size="md"
-              >
-                <IconX size={18} />
-              </ActionIcon>
-            </Group>
-
             <FileInput
               placeholder="Pick Image"
               label="Screen Shot"
@@ -109,7 +63,8 @@ export default function MistakeParagraph({ data }) {
                   marginBottom: theme.spacing.xs,
                 },
               }}
-              {...form.getInputProps("screenshot", { type: "input" })}
+              value={screenshot}
+              onChange={(e) => setScreenshot(e.target.files[0])}
             />
 
             <Textarea
@@ -121,7 +76,8 @@ export default function MistakeParagraph({ data }) {
                 },
               }}
               withAsterisk
-              {...form.getInputProps("explanationText", { type: "input" })}
+              value={explanationText}
+              onChange={(e) => setExplanationText(e.target.value)}
             />
 
             <Textarea
@@ -133,7 +89,8 @@ export default function MistakeParagraph({ data }) {
                 },
               }}
               withAsterisk
-              {...form.getInputProps("overcomeText", { type: "input" })}
+              value={overcomeText}
+              onChange={(e) => setOvercomeText(e.target.value)}
             />
 
             <Button
@@ -142,6 +99,7 @@ export default function MistakeParagraph({ data }) {
               }}
               leftIcon={<SaveIcon />}
               type="submit"
+              loading={loading}
             >
               Commit
             </Button>
@@ -169,20 +127,23 @@ export default function MistakeParagraph({ data }) {
               transform: "translate(50%, -50%)",
             }}
           >
-            {!getStaleParagraph(data.section) && (
-              <ActionIcon
-                onClick={() =>
-                  makeParagraphStale(data.section, data.type, data.id)
-                }
-                radius="xl"
-                variant="filled"
-                size="md"
-              >
-                <IconEdit size={18} />
-              </ActionIcon>
-            )}
             <ActionIcon
-              onClick={() => removeParagraph(data.section, data.type, data.id)}
+              onClick={async () => {
+                await commitParagraph(data.id, {
+                  ...data,
+                  stale: true,
+                });
+              }}
+              radius="xl"
+              variant="filled"
+              size="md"
+            >
+              <IconEdit size={18} />
+            </ActionIcon>
+            <ActionIcon
+              onClick={async () =>
+                await removeParagraph(data.section, data.type, data.id)
+              }
               radius="xl"
               variant="filled"
               size="md"
@@ -193,7 +154,7 @@ export default function MistakeParagraph({ data }) {
 
           <Text>
             Mistake -{" "}
-            {feedback[data.section].mistakes.findIndex(
+            {document[data.section]?.mistakes.findIndex(
               (elem) => elem.id === data.id
             ) + 1}
           </Text>

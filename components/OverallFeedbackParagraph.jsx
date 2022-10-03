@@ -1,30 +1,37 @@
 import { Button, Textarea, useMantineTheme } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FiSave as SaveIcon } from "react-icons/fi";
 import useFeedBack from "../hooks/use-feed-back";
 
 export default function OverallFeedbackParagraph() {
-  const { feedback, addOverallFeedback } = useFeedBack();
+  const { query } = useRouter();
+  const { document, addOverallFeedback, loading } = useFeedBack(query.id);
+  const [overallFeedback, setOverallFeedback] = useState(
+    document?.overallFeedback
+  );
 
-  const form = useForm({
-    initialValues: {
-      overallFeedback: feedback.overallFeedback,
-    },
-    validate: {
-      overallFeedback: (value) =>
-        !value ? "Please write an overall feedback" : null,
-    },
-  });
+  useEffect(() => {
+    if (!loading) {
+      setOverallFeedback(document?.overallFeedback);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const theme = useMantineTheme();
 
   return (
     <form
-      onSubmit={form.onSubmit((values) => {
-        addOverallFeedback(values.overallFeedback);
-      })}
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await addOverallFeedback(overallFeedback);
+      }}
     >
-      <Textarea minRows={5} {...form.getInputProps("overallFeedback")} />
+      <Textarea
+        minRows={5}
+        value={overallFeedback}
+        onChange={(e) => setOverallFeedback(e.target.value)}
+      />
       <Button
         sx={{
           marginTop: theme.spacing.md,
@@ -32,6 +39,7 @@ export default function OverallFeedbackParagraph() {
         }}
         leftIcon={<SaveIcon />}
         type="submit"
+        loading={loading}
       >
         Commit
       </Button>

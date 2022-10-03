@@ -1,5 +1,5 @@
 export const SECTIONS = Object.freeze({
-  EMPATHIZE: "empathize",
+  EMPATHISE: "empathise",
   DEFINE: "define",
   IDEATE: "ideate",
   PROTOTYPE: "prototype",

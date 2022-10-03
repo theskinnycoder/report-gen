@@ -1,7 +1,8 @@
 import { Button, Modal, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import useFeedBack from "../hooks/use-feed-back";
+import useCollection from "../hooks/use-collection";
+import { SECTIONS } from "../utils/constants";
 
 export default function NewReportDialog({ open, onClose }) {
   const form = useForm({
@@ -14,7 +15,7 @@ export default function NewReportDialog({ open, onClose }) {
   });
   const { push } = useRouter();
 
-  const { createReport } = useFeedBack();
+  const { addNewDoc } = useCollection("reports");
 
   return (
     <Modal
@@ -23,8 +24,32 @@ export default function NewReportDialog({ open, onClose }) {
       title={<Title size="h4">New Report Form</Title>}
     >
       <form
-        onSubmit={form.onSubmit((values) => {
-          const id = createReport(values.name);
+        onSubmit={form.onSubmit(async (values) => {
+          const id = await addNewDoc({
+            name: values.name,
+            introduction: "",
+            overallFeedback: "",
+            [SECTIONS.EMPATHISE]: {
+              mistakes: [],
+              didWell: [],
+            },
+            [SECTIONS.DEFINE]: {
+              mistakes: [],
+              didWell: [],
+            },
+            [SECTIONS.IDEATE]: {
+              mistakes: [],
+              didWell: [],
+            },
+            [SECTIONS.PROTOTYPE]: {
+              mistakes: [],
+              didWell: [],
+            },
+            [SECTIONS.TESTING]: {
+              mistakes: [],
+              didWell: [],
+            },
+          });
           onClose();
           push(`/new/${id}`);
         })}
