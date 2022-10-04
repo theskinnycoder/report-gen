@@ -1,5 +1,6 @@
 import {
   Accordion,
+  Box,
   Button,
   Grid,
   Paper,
@@ -24,8 +25,14 @@ import { capitalize, mapJSONtoRichText } from "../../../utils/functions";
 
 export default function EditFeedbackPage() {
   const { query } = useRouter();
-  const { document, addNewParagraph, removeParagraph, commitParagraph } =
-    useFeedBack(query.id);
+  const {
+    document,
+    addNewParagraph,
+    removeParagraph,
+    commitParagraph,
+    addIntroduction,
+    addOverallFeedback,
+  } = useFeedBack(query.id);
 
   const richText = useMemo(() => mapJSONtoRichText(document), [document]);
 
@@ -40,7 +47,7 @@ export default function EditFeedbackPage() {
 
   return (
     <>
-      <Stack spacing="xl" m="xl">
+      <Box my="xl" px="md">
         <Stepper
           active={active}
           onStepClick={setActive}
@@ -83,7 +90,10 @@ export default function EditFeedbackPage() {
                           width: "100%",
                         }}
                       >
-                        <OverallFeedbackParagraph />
+                        <OverallFeedbackParagraph
+                          overall={document.overallFeedback}
+                          addOverallFeedback={addOverallFeedback}
+                        />
                       </Accordion.Panel>
                     </Accordion.Item>
 
@@ -101,7 +111,10 @@ export default function EditFeedbackPage() {
                           width: "100%",
                         }}
                       >
-                        <IntroductionParagraph />
+                        <IntroductionParagraph
+                          intro={document.introduction}
+                          addIntroduction={addIntroduction}
+                        />
                       </Accordion.Panel>
                     </Accordion.Item>
 
@@ -118,43 +131,67 @@ export default function EditFeedbackPage() {
                           </Accordion.Control>
                           <Accordion.Panel>
                             <Stack spacing="sm">
-                              <Paper p="sm" withBorder>
-                                <Title size="h5" mb="xs">
-                                  Mistakes
-                                </Title>
+                              <Paper
+                                p="sm"
+                                withBorder
+                                sx={(theme) => ({
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "stretch",
+                                  gap: theme.spacing.sm,
+                                })}
+                              >
+                                <Title size="h5">Mistakes</Title>
                                 {document[key]?.mistakes.length >= 1 && (
-                                  <Stack spacing="lg">
-                                    {document[key]?.mistakes.map((item) => (
-                                      <MistakeParagraph
-                                        key={item?.id}
-                                        data={item}
-                                      />
-                                    ))}
+                                  <Stack spacing="sm">
+                                    {document[key]?.mistakes.map(
+                                      (item, idx) => (
+                                        <MistakeParagraph
+                                          key={item?.id}
+                                          data={item}
+                                          count={idx + 1}
+                                          commitParagraph={commitParagraph}
+                                          removeParagraph={removeParagraph}
+                                        />
+                                      )
+                                    )}
                                   </Stack>
                                 )}
                                 <Button
                                   leftIcon={<PlusIcon />}
                                   variant="outline"
                                   color="red.7"
+                                  sx={{
+                                    border: "1.5px solid",
+                                    alignSelf: "flex-start",
+                                  }}
                                   onClick={async () => {
                                     const id = await addNewParagraph(
                                       key,
                                       "mistakes"
                                     );
-                                    setMistakeDialogOpen(true);
                                     setDialogClickedArena({
                                       stage: key,
                                       id,
+                                      type: "mistakes",
                                     });
+                                    setMistakeDialogOpen(true);
                                   }}
                                 >
                                   Add Mistake
                                 </Button>
                               </Paper>
-                              <Paper p="sm" withBorder>
-                                <Title size="h5" mb="xs">
-                                  What you did well
-                                </Title>
+                              <Paper
+                                p="sm"
+                                withBorder
+                                sx={(theme) => ({
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "stretch",
+                                  gap: theme.spacing.sm,
+                                })}
+                              >
+                                <Title size="h5">What you did well</Title>
                                 {document[key]?.didWell.length >= 1 && (
                                   <Stack spacing="xs">
                                     {document[key]?.didWell.map((item, idx) => (
@@ -172,16 +209,21 @@ export default function EditFeedbackPage() {
                                   leftIcon={<PlusIcon />}
                                   variant="outline"
                                   color="green.8"
+                                  sx={{
+                                    border: "1.5px solid",
+                                    alignSelf: "flex-start",
+                                  }}
                                   onClick={async () => {
                                     const id = await addNewParagraph(
                                       key,
                                       "didWell"
                                     );
-                                    setDidWellDialogOpen(true);
                                     setDialogClickedArena({
                                       stage: key,
                                       id,
+                                      type: "didWell",
                                     });
+                                    setDidWellDialogOpen(true);
                                   }}
                                 >
                                   Add What You Did Well
@@ -209,7 +251,7 @@ export default function EditFeedbackPage() {
             <StepperRichTextStep />
           </Stepper.Step>
         </Stepper>
-      </Stack>
+      </Box>
       <NewMistakeDialog
         open={mistakeDialogOpen}
         onClose={() => setMistakeDialogOpen(false)}

@@ -1,28 +1,29 @@
 import {
   ActionIcon,
   Button,
-  FileInput,
   Group,
   Stack,
   Text,
-  Textarea,
   useMantineTheme,
 } from "@mantine/core";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiSave as SaveIcon } from "react-icons/fi";
 import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb";
-import useFeedBack from "../hooks/use-feed-back";
+import RichTextEditor from "./RichTextEditor";
 
-export default function MistakeParagraph({ data }) {
-  const { query } = useRouter();
-  const { document, loading, removeParagraph, commitParagraph } = useFeedBack(
-    query.id
-  );
-
-  const [screenshot, setScreenshot] = useState(data.screenshot);
+export default function MistakeParagraph({
+  data,
+  removeParagraph,
+  commitParagraph,
+  count,
+}) {
   const [explanationText, setExplanationText] = useState(data.explanationText);
   const [overcomeText, setOvercomeText] = useState(data.overcomeText);
+
+  useEffect(() => {
+    setExplanationText(data.explanationText);
+    setOvercomeText(data.overcomeText);
+  }, [data.explanationText, data.overcomeText]);
 
   const theme = useMantineTheme();
 
@@ -34,7 +35,7 @@ export default function MistakeParagraph({ data }) {
             e.preventDefault();
             await commitParagraph(data.id, {
               ...data,
-              screenshot,
+              screenshot: data.screenshot,
               explanationText,
               overcomeText,
               stale: false,
@@ -44,53 +45,31 @@ export default function MistakeParagraph({ data }) {
           <Stack
             spacing="md"
             p="md"
-            mb="xs"
             sx={{
-              position: "relative",
               border: "1.5px solid",
               borderColor: theme.colors.red,
-              borderRadius: "4px",
+              borderRadius: theme.radius.sm,
             }}
           >
-            <FileInput
-              placeholder="Pick Image"
-              label="Screen Shot"
-              variant="filled"
-              size="md"
-              withAsterisk
-              labelProps={{
-                sx: {
-                  marginBottom: theme.spacing.xs,
-                },
+            <Stack
+              p="xs"
+              sx={{
+                border: "1.5px solid",
+                borderColor: theme.colors.gray,
+                borderRadius: theme.radius.sm,
               }}
-              value={screenshot}
-              onChange={(e) => setScreenshot(e.target.files[0])}
-            />
+            >
+              <img src={data.screenshot} alt="" />
+            </Stack>
 
-            <Textarea
-              minRows={5}
-              label="Explanation"
-              labelProps={{
-                sx: {
-                  marginBottom: theme.spacing.xs,
-                },
-              }}
-              withAsterisk
+            <RichTextEditor
               value={explanationText}
-              onChange={(e) => setExplanationText(e.target.value)}
+              onChange={(value) => setExplanationText(value)}
             />
 
-            <Textarea
-              minRows={5}
-              label="How can you correct it"
-              labelProps={{
-                sx: {
-                  marginBottom: theme.spacing.xs,
-                },
-              }}
-              withAsterisk
+            <RichTextEditor
               value={overcomeText}
-              onChange={(e) => setOvercomeText(e.target.value)}
+              onChange={(value) => setOvercomeText(value)}
             />
 
             <Button
@@ -99,7 +78,6 @@ export default function MistakeParagraph({ data }) {
               }}
               leftIcon={<SaveIcon />}
               type="submit"
-              loading={loading}
             >
               Commit
             </Button>
@@ -108,13 +86,12 @@ export default function MistakeParagraph({ data }) {
       ) : (
         <Stack
           spacing="md"
-          mb="xs"
           p="md"
           sx={{
             position: "relative",
             border: "1.5px solid",
             borderColor: theme.colors.red,
-            borderRadius: "4px",
+            borderRadius: theme.radius.sm,
           }}
         >
           <Group
@@ -153,10 +130,7 @@ export default function MistakeParagraph({ data }) {
           </Group>
 
           <Text>
-            Mistake -{" "}
-            {document[data.section]?.mistakes.findIndex(
-              (elem) => elem.id === data.id
-            ) + 1}
+            <Text>What you did well - {count}</Text>
           </Text>
         </Stack>
       )}

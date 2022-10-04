@@ -1,20 +1,14 @@
-import { Button, Textarea, useMantineTheme } from "@mantine/core";
-import { useRouter } from "next/router";
+import { Button, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { FiSave as SaveIcon } from "react-icons/fi";
-import useFeedBack from "../hooks/use-feed-back";
+import RichTextEditor from "./RichTextEditor";
 
-export default function IntroductionParagraph() {
-  const { query } = useRouter();
-  const { document, addIntroduction, loading } = useFeedBack(query.id);
-  const [introduction, setIntroduction] = useState(document?.introduction);
+export default function IntroductionParagraph({ intro, addIntroduction }) {
+  const [introduction, setIntroduction] = useState(intro);
 
   useEffect(() => {
-    if (!loading) {
-      setIntroduction(document?.introduction);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+    setIntroduction(intro);
+  }, [intro]);
 
   const theme = useMantineTheme();
 
@@ -25,10 +19,9 @@ export default function IntroductionParagraph() {
         await addIntroduction(introduction);
       }}
     >
-      <Textarea
-        minRows={5}
+      <RichTextEditor
         value={introduction}
-        onChange={(e) => setIntroduction(e.target.value)}
+        onChange={(value) => setIntroduction(value)}
       />
       <Button
         sx={{
@@ -37,7 +30,6 @@ export default function IntroductionParagraph() {
         }}
         leftIcon={<SaveIcon />}
         type="submit"
-        loading={loading}
       >
         Commit
       </Button>

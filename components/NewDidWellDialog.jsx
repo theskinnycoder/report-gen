@@ -36,7 +36,7 @@ export default function NewDidWellDialog({
     const url = await uploadImage(
       feedbackId,
       arena.stage,
-      "good",
+      arena.type,
       arena.id,
       screenshot
     );
@@ -45,7 +45,7 @@ export default function NewDidWellDialog({
       section: arena.stage,
       text: data[selectedRadio - 1].explanations[selectedVersion - 1] ?? "",
       screenshot: url,
-      type: "didWell",
+      type: arena.type,
       stale: true,
     });
     setData(null);
@@ -64,7 +64,7 @@ export default function NewDidWellDialog({
       opened={open}
       onClose={async () => {
         if (!screenshot || !selectedRadio || !selectedVersion) {
-          await removeParagraph(arena.stage, "didWell", arena.id);
+          await removeParagraph(arena.stage, arena.type, arena.id);
         }
         onClose();
       }}

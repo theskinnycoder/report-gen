@@ -1,6 +1,11 @@
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
 import {
   AppShell,
   ColorSchemeProvider,
+  Group,
   Header,
   MantineProvider,
   Switch,
@@ -8,7 +13,6 @@ import {
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { getCookie, setCookie } from "cookies-next";
-import Head from "next/head";
 import { useState } from "react";
 import { TbMoonStars as MoonIcon, TbSun as SunIcon } from "react-icons/tb";
 
@@ -37,40 +41,44 @@ export default function App(props) {
           withNormalizeCSS
           theme={{
             colorScheme,
-            primaryColor: "cyan",
+            primaryColor: "teal",
+            fontFamily: "Poppins, sans-serif",
+            headings: {
+              fontFamily: "Poppins, sans-serif",
+            },
           }}
         >
           <AppShell
             padding="xl"
             header={
               <Header
-                height={60}
-                p={40}
+                p="xl"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  top: 0,
+                  position: "sticky",
                 }}
               >
-                <Title
-                  component={NextLink}
-                  href="/"
-                  size="h4"
-                  sx={{
-                    fontWeight: "bold",
-                    letterSpacing: "0.5",
-                  }}
-                >
-                  blip.
-                </Title>
-                <Switch
-                  checked={colorScheme === "dark"}
-                  onChange={() => toggleColorScheme()}
-                  color="gray"
-                  size="lg"
-                  onLabel={<SunIcon size="20" color="#fff" />}
-                  offLabel={<MoonIcon size="20" color="#495057" />}
-                />
+                <Group align="center" position="apart" px="xl">
+                  <Title
+                    component={NextLink}
+                    href="/"
+                    size="h4"
+                    sx={{
+                      fontWeight: "bold",
+                      letterSpacing: "0.5",
+                    }}
+                  >
+                    DT Reviews
+                  </Title>
+                  <Switch
+                    checked={colorScheme === "dark"}
+                    onChange={() => toggleColorScheme()}
+                    color="gray"
+                    size="lg"
+                    onLabel={<SunIcon size="20" color="#fff" />}
+                    offLabel={<MoonIcon size="20" color="#495057" />}
+                  />
+                </Group>
               </Header>
             }
             styles={(theme) => ({

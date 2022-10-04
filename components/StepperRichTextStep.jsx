@@ -1,4 +1,4 @@
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, useMantineColorScheme } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import useFeedBack from "../hooks/use-feed-back";
@@ -22,26 +22,42 @@ export default function StepperRichTextStep() {
     }
   }, [document, richText]);
 
+  const { colorScheme } = useMantineColorScheme();
+
   return (
-    <Stack m="xl">
+    <Stack my="xl" px="sm" spacing="xl">
       <Group position="center">
         <Button
           size="md"
           leftIcon={<NotionIcon />}
-          color="gray"
+          color={colorScheme === "dark" ? "gray" : "dark"}
           variant="outline"
+          sx={{
+            border: "1.5px solid",
+          }}
         >
           Save to Notion
         </Button>
         <Button
           size="md"
           leftIcon={<GoogleIcon />}
-          color="yellow"
+          color={colorScheme === "dark" ? "yellow" : "yellow.8"}
           variant="outline"
+          sx={{
+            border: "1.5px solid",
+          }}
         >
           Save to Google Docs
         </Button>
-        <Button size="md" leftIcon={<PdfIcon />} color="red" variant="outline">
+        <Button
+          size="md"
+          leftIcon={<PdfIcon />}
+          color={colorScheme === "dark" ? "red" : "red.8"}
+          variant="outline"
+          sx={{
+            border: "1.5px solid",
+          }}
+        >
           Download PDF
         </Button>
       </Group>

@@ -75,7 +75,6 @@ export default function DidWellParagraph({
       ) : (
         <Stack
           spacing="md"
-          mb="xs"
           p="md"
           sx={{
             position: "relative",

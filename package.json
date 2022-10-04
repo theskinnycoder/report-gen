@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/server": "^11.10.0",
+    "@fontsource/poppins": "^4.5.10",
     "@googleapis/docs": "^1.0.1",
     "@googleapis/sheets": "^3.0.2",
     "@mantine/core": "^5.4.2",
