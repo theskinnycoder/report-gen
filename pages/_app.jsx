@@ -28,14 +28,6 @@ export default function App(props) {
 
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
@@ -44,8 +36,6 @@ export default function App(props) {
           withGlobalStyles
           withNormalizeCSS
           theme={{
-            fontFamily: "Poppins, SF Pro Text, sans-serif",
-            headings: { fontFamily: "Poppins, SF Pro Display, sans-serif" },
             colorScheme,
             primaryColor: "cyan",
           }}
