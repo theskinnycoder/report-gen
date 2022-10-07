@@ -1,13 +1,16 @@
-import { useCallback } from "react";
-import { v4 } from "uuid";
-import useDocument from "./use-document";
+import { useCallback } from "react"
+import { v4 } from "uuid"
+import useDocument from "./use-document"
 
 export default function useFeedBack(id) {
-  const { updateDocument, document, loading } = useDocument("reports", id);
+  const { updateDocument, document, loading } = useDocument(
+    "reports",
+    id,
+  )
 
   const addNewParagraph = useCallback(
     async (section, type) => {
-      const id = v4();
+      const id = v4()
       const newItem =
         type === "mistakes"
           ? {
@@ -26,18 +29,18 @@ export default function useFeedBack(id) {
               section,
               type,
               stale: true,
-            };
+            }
       await updateDocument({
         ...document,
         [section]: {
           ...document[section],
           [type]: [...document[section][type], newItem],
         },
-      });
-      return id;
+      })
+      return id
     },
-    [document, updateDocument]
-  );
+    [document, updateDocument],
+  )
 
   const removeParagraph = useCallback(
     async (section, type, id) => {
@@ -45,12 +48,14 @@ export default function useFeedBack(id) {
         ...document,
         [section]: {
           ...document[section],
-          [type]: document[section][type].filter((para) => para.id !== id),
+          [type]: document[section][type].filter(
+            (para) => para.id !== id,
+          ),
         },
-      });
+      })
     },
-    [document, updateDocument]
-  );
+    [document, updateDocument],
+  )
 
   const commitParagraph = useCallback(
     async (id, newValue) => {
@@ -58,41 +63,43 @@ export default function useFeedBack(id) {
         ...document,
         [newValue.section]: {
           ...document[newValue.section],
-          [newValue.type]: document?.[newValue?.section]?.[newValue?.type].map(
-            (item) => (item?.id === id ? newValue : item)
-          ),
+          [newValue.type]: document?.[newValue?.section]?.[
+            newValue?.type
+          ].map((item) => (item?.id === id ? newValue : item)),
         },
-      });
+      })
     },
-    [document, updateDocument]
-  );
+    [document, updateDocument],
+  )
 
   const getParagraph = useCallback(
     (section, type, id) => {
-      return document[section]?.[type]?.find((item) => item?.id === id);
+      return document[section]?.[type]?.find(
+        (item) => item?.id === id,
+      )
     },
-    [document]
-  );
+    [document],
+  )
 
   const addIntroduction = useCallback(
     async (text) => {
       await updateDocument({
         ...document,
         introduction: text,
-      });
+      })
     },
-    [document, updateDocument]
-  );
+    [document, updateDocument],
+  )
 
   const addOverallFeedback = useCallback(
     async (text) => {
       await updateDocument({
         ...document,
         overallFeedback: text,
-      });
+      })
     },
-    [document, updateDocument]
-  );
+    [document, updateDocument],
+  )
 
   return {
     document,
@@ -103,5 +110,5 @@ export default function useFeedBack(id) {
     getParagraph,
     addIntroduction,
     addOverallFeedback,
-  };
+  }
 }

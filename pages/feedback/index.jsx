@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Button,
-  Divider,
   Group,
   Paper,
   SimpleGrid,
@@ -16,9 +15,9 @@ import {
   HiTrash as TrashIcon,
 } from "react-icons/hi"
 import { TbPlus as PlusIcon } from "react-icons/tb"
-import DeleteConfirmationDialog from "../components/DeleteConfirmationDialog"
-import NewReportDialog from "../components/NewReportDialog"
-import useCollection from "../hooks/use-collection"
+import DeleteConfirmationDialog from "../../components/DeleteConfirmationDialog"
+import NewReportDialog from "../../components/NewReportDialog"
+import useCollection from "../../hooks/use-collection"
 
 export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -31,36 +30,24 @@ export default function Home() {
   return (
     <>
       <Stack spacing="xl" p="lg" my="xl">
-        <Button
-          sx={{
-            justifySelf: "flex-start",
-            width: "fit-content",
-          }}
-          mb="xl"
-          leftIcon={<PlusIcon />}
-          size="lg"
-          onClick={() => setDialogOpen(true)}
-        >
-          Create New Report
-        </Button>
-        <Divider />
-        <Stack spacing="xl" mt="xl">
+        <Stack spacing="xl">
           <Group position="apart">
-            <Title order={2}>Latest Feedbacks</Title>
-            <Link href="/feedback" passHref>
-              <Button
-                component="a"
-                variant="subtle"
-                size="xs"
-                color="gray"
-                rightIcon={<VisitIcon />}
-              >
-                View All
-              </Button>
-            </Link>
+            <Title order={2}>All Feedback Reports</Title>
+            <Button
+              sx={{
+                justifySelf: "flex-start",
+                width: "fit-content",
+              }}
+              mb="xl"
+              leftIcon={<PlusIcon />}
+              size="md"
+              onClick={() => setDialogOpen(true)}
+            >
+              Create New Report
+            </Button>
           </Group>
           <SimpleGrid cols={3} spacing="xl">
-            {documents.slice(0, 9).map((doc) => (
+            {documents.map((doc) => (
               <Paper
                 key={doc.id}
                 p="lg"

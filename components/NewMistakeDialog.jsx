@@ -1,7 +1,15 @@
-import { Button, Group, Modal, Radio, Stack, Text, Title } from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { useEffect, useState } from "react";
-import useStorage from "../hooks/use-storage";
+import {
+  Button,
+  Group,
+  Modal,
+  Radio,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core"
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
+import { useEffect, useState } from "react"
+import useStorage from "../hooks/use-storage"
 
 export default function NewMistakeDialog({
   open,
@@ -11,55 +19,57 @@ export default function NewMistakeDialog({
   commitParagraph,
   removeParagraph,
 }) {
-  const { uploadImage } = useStorage();
-  const [data, setData] = useState(null);
-  const [radios, setRadios] = useState([]);
-  const [versions, setVersions] = useState([]);
+  const { uploadImage } = useStorage()
+  const [data, setData] = useState(null)
+  const [radios, setRadios] = useState([])
+  const [versions, setVersions] = useState([])
 
-  const [screenshot, setScreenshot] = useState(null);
-  const [selectedRadio, setSelectedRadio] = useState(0);
-  const [selectedVersion, setSelectedVersion] = useState(0);
+  const [screenshot, setScreenshot] = useState(null)
+  const [selectedRadio, setSelectedRadio] = useState(0)
+  const [selectedVersion, setSelectedVersion] = useState(0)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const response = await fetch(
-        `/api/sheets?stage=${arena?.stage}&feedback_type=mistake`
-      );
-      const { values } = await response.json();
-      setData(values);
-      setRadios(values.map((row) => row.checkbox_text));
-    })();
-  }, [arena]);
+        `/api/sheets?stage=${arena?.stage}&feedback_type=mistake`,
+      )
+      const { values } = await response.json()
+      setData(values)
+      setRadios(values.map((row) => row.checkbox_text))
+    })()
+  }, [arena])
 
   const submitHandler = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     const url = await uploadImage(
       feedbackId,
       arena.stage,
       arena.type,
       arena.id,
-      screenshot
-    );
+      screenshot,
+    )
     await commitParagraph(arena.id, {
       id: arena.id,
       section: arena.stage,
       explanationText:
-        data[selectedRadio - 1].explanations[selectedVersion - 1] ?? "",
+        data[selectedRadio - 1].explanations[selectedVersion - 1] ??
+        "",
       overcomeText:
-        data[selectedRadio - 1].corrections[selectedVersion - 1] ?? "",
+        data[selectedRadio - 1].corrections[selectedVersion - 1] ??
+        "",
       screenshot: url,
       type: arena.type,
       stale: true,
-    });
-    setData(null);
-    setRadios([]);
-    setVersions([]);
-    setScreenshot(null);
-    setSelectedRadio(0);
-    setSelectedVersion(0);
+    })
+    setData(null)
+    setRadios([])
+    setVersions([])
+    setScreenshot(null)
+    setSelectedRadio(0)
+    setSelectedVersion(0)
 
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <Modal
@@ -67,9 +77,9 @@ export default function NewMistakeDialog({
       opened={open}
       onClose={async () => {
         if (!screenshot || !selectedRadio || !selectedVersion) {
-          await removeParagraph(arena.stage, arena.type, arena.id);
+          await removeParagraph(arena.stage, arena.type, arena.id)
         }
-        onClose();
+        onClose()
       }}
       title={<Title>Add a Negative Feedback Point</Title>}
     >
@@ -77,7 +87,7 @@ export default function NewMistakeDialog({
         <Stack spacing="md">
           <Dropzone
             onDrop={(files) => {
-              setScreenshot(files[0]);
+              setScreenshot(files[0])
             }}
             onReject={(files) => console.log("rejected files", files)}
             maxSize={3 * 1024 ** 2}
@@ -112,16 +122,17 @@ export default function NewMistakeDialog({
               withAsterisk
               value={selectedRadio}
               onChange={(value) => {
-                setSelectedRadio(+value);
+                setSelectedRadio(+value)
                 setVersions(
                   Array.from(
                     {
-                      length: data[+value - 1].explanations.filter((el) => el)
-                        .length,
+                      length: data[+value - 1].explanations.filter(
+                        (el) => el,
+                      ).length,
                     },
-                    (_v, i) => i + 1
-                  )
-                );
+                    (_v, i) => i + 1,
+                  ),
+                )
               }}
             >
               {radios.map((radio, idx) => (
@@ -142,7 +153,11 @@ export default function NewMistakeDialog({
               onChange={(value) => setSelectedVersion(+value)}
             >
               {versions.map((version) => (
-                <Radio key={version} value={version} label={version} />
+                <Radio
+                  key={version}
+                  value={version}
+                  label={version}
+                />
               ))}
             </Radio.Group>
           )}
@@ -153,5 +168,5 @@ export default function NewMistakeDialog({
         </Stack>
       </form>
     </Modal>
-  );
+  )
 }

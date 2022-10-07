@@ -5,11 +5,11 @@ import {
   Stack,
   Text,
   useMantineTheme,
-} from "@mantine/core";
-import { useState, useEffect } from "react";
-import { FiSave as SaveIcon } from "react-icons/fi";
-import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb";
-import RichTextEditor from "./RichTextEditor";
+} from "@mantine/core"
+import { useState, useEffect } from "react"
+import { FiSave as SaveIcon } from "react-icons/fi"
+import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb"
+import RichTextEditor from "./RichTextEditor"
 
 export default function MistakeParagraph({
   data,
@@ -17,29 +17,31 @@ export default function MistakeParagraph({
   commitParagraph,
   count,
 }) {
-  const [explanationText, setExplanationText] = useState(data.explanationText);
-  const [overcomeText, setOvercomeText] = useState(data.overcomeText);
+  const [explanationText, setExplanationText] = useState(
+    data.explanationText,
+  )
+  const [overcomeText, setOvercomeText] = useState(data.overcomeText)
 
   useEffect(() => {
-    setExplanationText(data.explanationText);
-    setOvercomeText(data.overcomeText);
-  }, [data.explanationText, data.overcomeText]);
+    setExplanationText(data.explanationText)
+    setOvercomeText(data.overcomeText)
+  }, [data.explanationText, data.overcomeText])
 
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
 
   return (
     <>
       {data.stale ? (
         <form
           onSubmit={async (e) => {
-            e.preventDefault();
+            e.preventDefault()
             await commitParagraph(data.id, {
               ...data,
               screenshot: data.screenshot,
               explanationText,
               overcomeText,
               stale: false,
-            });
+            })
           }}
         >
           <Stack
@@ -109,7 +111,7 @@ export default function MistakeParagraph({
                 await commitParagraph(data.id, {
                   ...data,
                   stale: true,
-                });
+                })
               }}
               radius="xl"
               variant="filled"
@@ -119,7 +121,11 @@ export default function MistakeParagraph({
             </ActionIcon>
             <ActionIcon
               onClick={async () =>
-                await removeParagraph(data.section, data.type, data.id)
+                await removeParagraph(
+                  data.section,
+                  data.type,
+                  data.id,
+                )
               }
               radius="xl"
               variant="filled"
@@ -135,5 +141,5 @@ export default function MistakeParagraph({
         </Stack>
       )}
     </>
-  );
+  )
 }

@@ -1,22 +1,25 @@
-import { Button, useMantineTheme } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { FiSave as SaveIcon } from "react-icons/fi";
-import RichTextEditor from "./RichTextEditor";
+import { Button, useMantineTheme } from "@mantine/core"
+import { useEffect, useState } from "react"
+import { FiSave as SaveIcon } from "react-icons/fi"
+import RichTextEditor from "./RichTextEditor"
 
-export default function IntroductionParagraph({ intro, addIntroduction }) {
-  const [introduction, setIntroduction] = useState(intro);
+export default function IntroductionParagraph({
+  intro,
+  addIntroduction,
+}) {
+  const [introduction, setIntroduction] = useState(intro)
 
   useEffect(() => {
-    setIntroduction(intro);
-  }, [intro]);
+    setIntroduction(intro)
+  }, [intro])
 
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
 
   return (
     <form
       onSubmit={async (e) => {
-        e.preventDefault();
-        await addIntroduction(introduction);
+        e.preventDefault()
+        await addIntroduction(introduction)
       }}
     >
       <RichTextEditor
@@ -34,5 +37,5 @@ export default function IntroductionParagraph({ intro, addIntroduction }) {
         Commit
       </Button>
     </form>
-  );
+  )
 }

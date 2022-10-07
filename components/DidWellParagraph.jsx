@@ -5,11 +5,11 @@ import {
   Stack,
   Text,
   useMantineTheme,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
-import { FiSave as SaveIcon } from "react-icons/fi";
-import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb";
-import RichTextEditor from "./RichTextEditor";
+} from "@mantine/core"
+import { useEffect, useState } from "react"
+import { FiSave as SaveIcon } from "react-icons/fi"
+import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb"
+import RichTextEditor from "./RichTextEditor"
 
 export default function DidWellParagraph({
   data,
@@ -17,26 +17,26 @@ export default function DidWellParagraph({
   commitParagraph,
   count,
 }) {
-  const [text, setText] = useState(data.text);
+  const [text, setText] = useState(data.text)
 
   useEffect(() => {
-    setText(data.text);
-  }, [data.text]);
+    setText(data.text)
+  }, [data.text])
 
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
 
   return (
     <>
       {data.stale ? (
         <form
           onSubmit={async (e) => {
-            e.preventDefault();
+            e.preventDefault()
             await commitParagraph(data.id, {
               ...data,
               screenshot: data.screenshot,
               text,
               stale: false,
-            });
+            })
           }}
         >
           <Stack
@@ -59,7 +59,10 @@ export default function DidWellParagraph({
               <img src={data.screenshot} alt="" />
             </Stack>
 
-            <RichTextEditor value={text} onChange={(value) => setText(value)} />
+            <RichTextEditor
+              value={text}
+              onChange={(value) => setText(value)}
+            />
 
             <Button
               sx={{
@@ -98,7 +101,7 @@ export default function DidWellParagraph({
                 await commitParagraph(data.id, {
                   ...data,
                   stale: true,
-                });
+                })
               }}
               radius="xl"
               variant="filled"
@@ -108,7 +111,11 @@ export default function DidWellParagraph({
             </ActionIcon>
             <ActionIcon
               onClick={async () =>
-                await removeParagraph(data.section, data.type, data.id)
+                await removeParagraph(
+                  data.section,
+                  data.type,
+                  data.id,
+                )
               }
               radius="xl"
               variant="filled"
@@ -122,5 +129,5 @@ export default function DidWellParagraph({
         </Stack>
       )}
     </>
-  );
+  )
 }

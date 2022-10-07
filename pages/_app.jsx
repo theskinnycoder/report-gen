@@ -1,7 +1,7 @@
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
+import "@fontsource/poppins/400.css"
+import "@fontsource/poppins/500.css"
+import "@fontsource/poppins/600.css"
+import "@fontsource/poppins/700.css"
 import {
   AppShell,
   ColorSchemeProvider,
@@ -10,25 +10,28 @@ import {
   MantineProvider,
   Switch,
   Title,
-} from "@mantine/core";
-import { NextLink } from "@mantine/next";
-import { getCookie, setCookie } from "cookies-next";
-import { useState } from "react";
-import { TbMoonStars as MoonIcon, TbSun as SunIcon } from "react-icons/tb";
+} from "@mantine/core"
+import { NextLink } from "@mantine/next"
+import { getCookie, setCookie } from "cookies-next"
+import { useState } from "react"
+import {
+  TbMoonStars as MoonIcon,
+  TbSun as SunIcon,
+} from "react-icons/tb"
 
 export default function App(props) {
-  const { Component, pageProps } = props;
+  const { Component, pageProps } = props
 
-  const [colorScheme, setColorScheme] = useState(props.colorScheme);
+  const [colorScheme, setColorScheme] = useState(props.colorScheme)
 
   const toggleColorScheme = (value) => {
     const nextColorScheme =
-      value || (colorScheme === "dark" ? "light" : "dark");
-    setColorScheme(nextColorScheme);
+      value || (colorScheme === "dark" ? "light" : "dark")
+    setColorScheme(nextColorScheme)
     setCookie("mantine-color-scheme", nextColorScheme, {
       maxAge: 60 * 60 * 24 * 30,
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -95,9 +98,9 @@ export default function App(props) {
         </MantineProvider>
       </ColorSchemeProvider>
     </>
-  );
+  )
 }
 
 App.getInitialProps = ({ ctx }) => ({
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
-});
+})

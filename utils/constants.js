@@ -4,4 +4,4 @@ export const SECTIONS = Object.freeze({
   IDEATE: "ideate",
   PROTOTYPE: "prototype",
   TESTING: "testing",
-});
+})

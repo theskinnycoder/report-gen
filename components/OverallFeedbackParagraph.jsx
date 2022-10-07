@@ -1,25 +1,25 @@
-import { Button, Textarea, useMantineTheme } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { FiSave as SaveIcon } from "react-icons/fi";
-import RichTextEditor from "./RichTextEditor";
+import { Button, Textarea, useMantineTheme } from "@mantine/core"
+import { useEffect, useState } from "react"
+import { FiSave as SaveIcon } from "react-icons/fi"
+import RichTextEditor from "./RichTextEditor"
 
 export default function OverallFeedbackParagraph({
   overall,
   addOverallFeedback,
 }) {
-  const [overallFeedback, setOverallFeedback] = useState(overall);
+  const [overallFeedback, setOverallFeedback] = useState(overall)
 
   useEffect(() => {
-    setOverallFeedback(overall);
-  }, [overall]);
+    setOverallFeedback(overall)
+  }, [overall])
 
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
 
   return (
     <form
       onSubmit={async (e) => {
-        e.preventDefault();
-        await addOverallFeedback(overallFeedback);
+        e.preventDefault()
+        await addOverallFeedback(overallFeedback)
       }}
     >
       <RichTextEditor
@@ -37,5 +37,5 @@ export default function OverallFeedbackParagraph({
         Commit
       </Button>
     </form>
-  );
+  )
 }
