@@ -10,8 +10,8 @@ import {
   SiAdobeacrobatreader as PdfIcon,
   SiNotion as NotionIcon,
 } from "react-icons/si"
-import useFeedBack from "../hooks/use-feed-back"
-import { mapJSONtoRichText } from "../utils/functions"
+import useFeedBack from "~/hooks/use-feed-back"
+import { mapJSONtoRichText } from "~/utils/functions"
 import RichTextEditor from "./RichTextEditor"
 
 export default function StepperRichTextStep() {

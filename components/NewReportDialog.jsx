@@ -1,7 +1,7 @@
 import { Button, Modal, TextInput, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useRouter } from "next/router"
-import { SECTIONS } from "../utils/constants"
+import { SECTIONS } from "~/utils/constants"
 
 export default function NewReportDialog({
   open,

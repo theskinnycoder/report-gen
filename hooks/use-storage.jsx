@@ -1,6 +1,6 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useCallback } from "react"
-import { storage } from "../lib/firebase"
+import { storage } from "~/lib/firebase"
 
 export default function useStorage() {
   const uploadImage = useCallback(

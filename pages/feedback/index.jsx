@@ -15,9 +15,9 @@ import {
   HiTrash as TrashIcon,
 } from "react-icons/hi"
 import { TbPlus as PlusIcon } from "react-icons/tb"
-import DeleteConfirmationDialog from "../../components/DeleteConfirmationDialog"
-import NewReportDialog from "../../components/NewReportDialog"
-import useCollection from "../../hooks/use-collection"
+import DeleteConfirmationDialog from "~/components/DeleteConfirmationDialog"
+import NewReportDialog from "~/components/NewReportDialog"
+import useCollection from "~/hooks/use-collection"
 
 export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false)

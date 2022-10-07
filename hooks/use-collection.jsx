@@ -6,7 +6,7 @@ import {
   setDoc,
 } from "firebase/firestore"
 import { useCallback, useEffect, useState } from "react"
-import { db } from "../lib/firebase"
+import { db } from "~/lib/firebase"
 
 export default function useCollection(collectionName) {
   const [documents, setDocuments] = useState([])

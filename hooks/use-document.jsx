@@ -1,6 +1,6 @@
 import { doc, onSnapshot, setDoc } from "firebase/firestore"
 import { useCallback, useEffect, useState } from "react"
-import { db } from "../lib/firebase"
+import { db } from "~/lib/firebase"
 
 export default function useDocument(collectionName, id) {
   const [document, setDocument] = useState({})

@@ -9,7 +9,7 @@ import {
 } from "@mantine/core"
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
 import { useEffect, useState } from "react"
-import useStorage from "../hooks/use-storage"
+import useStorage from "~/hooks/use-storage"
 
 export default function NewDidWellDialog({
   open,
