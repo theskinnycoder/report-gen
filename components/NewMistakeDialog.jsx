@@ -18,6 +18,7 @@ export default function NewMistakeDialog({
   feedbackId,
   commitParagraph,
   removeParagraph,
+  loading,
 }) {
   const { uploadImage } = useStorage()
   const [data, setData] = useState(null)
@@ -162,7 +163,12 @@ export default function NewMistakeDialog({
             </Radio.Group>
           )}
 
-          <Button type="submit" size="md">
+          <Button
+            type="submit"
+            size="md"
+            loading={loading}
+            disabled={loading}
+          >
             Generate
           </Button>
         </Stack>

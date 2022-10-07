@@ -37,8 +37,8 @@ export default function Home() {
             width: "fit-content",
           }}
           mb="xl"
-          leftIcon={<PlusIcon />}
-          size="lg"
+          leftIcon={<PlusIcon strokeWidth="4px" />}
+          size="md"
           onClick={() => setDialogOpen(true)}
         >
           Create New Report
@@ -46,7 +46,7 @@ export default function Home() {
         <Divider />
         <Stack spacing="xl" mt="xl">
           <Group position="apart">
-            <Title order={2}>Latest Feedbacks</Title>
+            <Title order={2}>Latest Feedback Reports</Title>
             <Link href="/feedback" passHref>
               <Button
                 component="a"
@@ -66,13 +66,10 @@ export default function Home() {
                 p="lg"
                 withBorder
                 sx={(theme) => ({
-                  textDecoration: "none",
+                  borderWidth: "1.5px",
                   ":hover": {
                     transition: "all 0.3s ease",
-                    borderColor:
-                      theme.colorScheme === "dark"
-                        ? theme.primaryColor
-                        : theme.colors.teal[6],
+                    borderColor: theme.colors[theme.primaryColor][6],
                   },
                 })}
               >

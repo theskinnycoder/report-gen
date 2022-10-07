@@ -4,11 +4,15 @@ import {
   Group,
   Stack,
   Text,
+  Tooltip,
   useMantineTheme,
 } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { FiSave as SaveIcon } from "react-icons/fi"
-import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb"
+import {
+  HiTrash as TrashIcon,
+  HiPencilAlt as EditIcon,
+} from "react-icons/hi"
 import RichTextEditor from "./RichTextEditor"
 
 export default function DidWellParagraph({
@@ -16,6 +20,7 @@ export default function DidWellParagraph({
   removeParagraph,
   commitParagraph,
   count,
+  loading,
 }) {
   const [text, setText] = useState(data.text)
 
@@ -44,7 +49,7 @@ export default function DidWellParagraph({
             p="md"
             sx={{
               border: "1.5px solid",
-              borderColor: theme.colors.green,
+              borderColor: theme.colors.green[7],
               borderRadius: theme.radius.sm,
             }}
           >
@@ -52,14 +57,24 @@ export default function DidWellParagraph({
               p="xs"
               sx={{
                 border: "1.5px solid",
-                borderColor: theme.colors.gray,
+                borderColor: theme.colors.gray[4],
                 borderRadius: theme.radius.sm,
               }}
             >
-              <img src={data.screenshot} alt="" />
+              <img
+                src={data.screenshot}
+                alt=""
+                style={{
+                  maxWidth: "35vw",
+                }}
+              />
             </Stack>
 
             <RichTextEditor
+              sx={{
+                border: "1.5px solid",
+                borderColor: theme.colors.gray[4],
+              }}
               value={text}
               onChange={(value) => setText(value)}
             />
@@ -68,8 +83,10 @@ export default function DidWellParagraph({
               sx={{
                 placeSelf: "flex-end",
               }}
-              leftIcon={<SaveIcon />}
+              leftIcon={<SaveIcon strokeWidth="3px" />}
               type="submit"
+              loading={loading}
+              disabled={loading}
             >
               Commit
             </Button>
@@ -82,7 +99,7 @@ export default function DidWellParagraph({
           sx={{
             position: "relative",
             border: "1.5px solid",
-            borderColor: theme.colors.green,
+            borderColor: theme.colors.green[7],
             borderRadius: theme.radius.sm,
           }}
         >
@@ -96,33 +113,43 @@ export default function DidWellParagraph({
               transform: "translate(50%, -50%)",
             }}
           >
-            <ActionIcon
-              onClick={async () => {
-                await commitParagraph(data.id, {
-                  ...data,
-                  stale: true,
-                })
-              }}
-              radius="xl"
-              variant="filled"
-              size="md"
-            >
-              <IconEdit size={18} />
-            </ActionIcon>
-            <ActionIcon
-              onClick={async () =>
-                await removeParagraph(
-                  data.section,
-                  data.type,
-                  data.id,
-                )
-              }
-              radius="xl"
-              variant="filled"
-              size="md"
-            >
-              <IconX size={18} />
-            </ActionIcon>
+            <Tooltip label="Edit" withArrow>
+              <ActionIcon
+                onClick={async () => {
+                  await commitParagraph(data.id, {
+                    ...data,
+                    stale: true,
+                  })
+                }}
+                color="blue"
+                radius="xl"
+                variant="filled"
+                size="md"
+                loading={loading}
+                disabled={loading}
+              >
+                <EditIcon size={18} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Delete" withArrow>
+              <ActionIcon
+                onClick={async () =>
+                  await removeParagraph(
+                    data.section,
+                    data.type,
+                    data.id,
+                  )
+                }
+                loading={loading}
+                disabled={loading}
+                color="red"
+                radius="xl"
+                variant="filled"
+                size="md"
+              >
+                <TrashIcon size={18} />
+              </ActionIcon>
+            </Tooltip>
           </Group>
 
           <Text>What you did well - {count}</Text>

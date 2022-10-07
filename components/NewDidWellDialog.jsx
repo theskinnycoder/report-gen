@@ -18,6 +18,7 @@ export default function NewDidWellDialog({
   feedbackId,
   commitParagraph,
   removeParagraph,
+  loading,
 }) {
   const { uploadImage } = useStorage()
   const [data, setData] = useState(null)
@@ -159,7 +160,12 @@ export default function NewDidWellDialog({
             </Radio.Group>
           )}
 
-          <Button type="submit" size="md">
+          <Button
+            type="submit"
+            size="md"
+            loading={loading}
+            disabled={loading}
+          >
             Generate
           </Button>
         </Stack>

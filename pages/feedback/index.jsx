@@ -39,7 +39,7 @@ export default function Home() {
                 width: "fit-content",
               }}
               mb="xl"
-              leftIcon={<PlusIcon />}
+              leftIcon={<PlusIcon strokeWidth="4px" />}
               size="md"
               onClick={() => setDialogOpen(true)}
             >
@@ -53,13 +53,10 @@ export default function Home() {
                 p="lg"
                 withBorder
                 sx={(theme) => ({
-                  textDecoration: "none",
+                  borderWidth: "1.5px",
                   ":hover": {
                     transition: "all 0.3s ease",
-                    borderColor:
-                      theme.colorScheme === "dark"
-                        ? theme.primaryColor
-                        : theme.colors.teal[6],
+                    borderColor: theme.colors[theme.primaryColor][6],
                   },
                 })}
               >

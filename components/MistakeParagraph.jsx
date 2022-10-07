@@ -4,11 +4,15 @@ import {
   Group,
   Stack,
   Text,
+  Tooltip,
   useMantineTheme,
 } from "@mantine/core"
 import { useState, useEffect } from "react"
 import { FiSave as SaveIcon } from "react-icons/fi"
-import { TbEdit as IconEdit, TbX as IconX } from "react-icons/tb"
+import {
+  HiTrash as TrashIcon,
+  HiPencilAlt as EditIcon,
+} from "react-icons/hi"
 import RichTextEditor from "./RichTextEditor"
 
 export default function MistakeParagraph({
@@ -16,6 +20,7 @@ export default function MistakeParagraph({
   removeParagraph,
   commitParagraph,
   count,
+  loading,
 }) {
   const [explanationText, setExplanationText] = useState(
     data.explanationText,
@@ -49,7 +54,7 @@ export default function MistakeParagraph({
             p="md"
             sx={{
               border: "1.5px solid",
-              borderColor: theme.colors.red,
+              borderColor: theme.colors.red[6],
               borderRadius: theme.radius.sm,
             }}
           >
@@ -61,7 +66,13 @@ export default function MistakeParagraph({
                 borderRadius: theme.radius.sm,
               }}
             >
-              <img src={data.screenshot} alt="" />
+              <img
+                src={data.screenshot}
+                alt=""
+                style={{
+                  maxWidth: "35vw",
+                }}
+              />
             </Stack>
 
             <RichTextEditor
@@ -78,8 +89,10 @@ export default function MistakeParagraph({
               sx={{
                 placeSelf: "flex-end",
               }}
-              leftIcon={<SaveIcon />}
+              leftIcon={<SaveIcon strokeWidth="3px" />}
               type="submit"
+              loading={loading}
+              disabled={loading}
             >
               Commit
             </Button>
@@ -92,7 +105,7 @@ export default function MistakeParagraph({
           sx={{
             position: "relative",
             border: "1.5px solid",
-            borderColor: theme.colors.red,
+            borderColor: theme.colors.red[6],
             borderRadius: theme.radius.sm,
           }}
         >
@@ -106,37 +119,47 @@ export default function MistakeParagraph({
               transform: "translate(50%, -50%)",
             }}
           >
-            <ActionIcon
-              onClick={async () => {
-                await commitParagraph(data.id, {
-                  ...data,
-                  stale: true,
-                })
-              }}
-              radius="xl"
-              variant="filled"
-              size="md"
-            >
-              <IconEdit size={18} />
-            </ActionIcon>
-            <ActionIcon
-              onClick={async () =>
-                await removeParagraph(
-                  data.section,
-                  data.type,
-                  data.id,
-                )
-              }
-              radius="xl"
-              variant="filled"
-              size="md"
-            >
-              <IconX size={18} />
-            </ActionIcon>
+            <Tooltip label="Edit" withArrow>
+              <ActionIcon
+                onClick={async () => {
+                  await commitParagraph(data.id, {
+                    ...data,
+                    stale: true,
+                  })
+                }}
+                radius="xl"
+                variant="filled"
+                size="md"
+                color="blue"
+                loading={loading}
+                disabled={loading}
+              >
+                <EditIcon size={18} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Delete" withArrow>
+              <ActionIcon
+                onClick={async () =>
+                  await removeParagraph(
+                    data.section,
+                    data.type,
+                    data.id,
+                  )
+                }
+                radius="xl"
+                variant="filled"
+                size="md"
+                color="red"
+                loading={loading}
+                disabled={loading}
+              >
+                <TrashIcon size={18} />
+              </ActionIcon>
+            </Tooltip>
           </Group>
 
           <Text>
-            <Text>What you did well - {count}</Text>
+            <Text>Mistake - {count}</Text>
           </Text>
         </Stack>
       )}

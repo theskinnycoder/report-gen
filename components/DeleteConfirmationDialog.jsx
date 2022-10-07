@@ -7,6 +7,7 @@ import {
   Title,
   useMantineColorScheme,
 } from "@mantine/core"
+import { showNotification } from "@mantine/notifications"
 import { HiTrash as TrashIcon } from "react-icons/hi"
 
 export default function DeleteConfirmationDialog({
@@ -20,6 +21,12 @@ export default function DeleteConfirmationDialog({
   const handleDelete = (_e) => {
     deleteDocument(document.id)
     onClose()
+    showNotification({
+      title: "Feedback Report Deleted!",
+      message: `Feedback Report of ${document?.name} has been deleted.`,
+      color: "red",
+      icon: <TrashIcon />,
+    })
   }
 
   return (
@@ -31,7 +38,7 @@ export default function DeleteConfirmationDialog({
       <Stack spacing="xl">
         <Text size="md">
           Are you sure you want to delete <b>{document?.name}</b>
-          &apos;s feedback? All your data will be lost
+          &apos;s feedback? All your data will be lost.
         </Text>
         <Group align="center" position="right">
           <Button

@@ -1,6 +1,7 @@
 import {
   Button,
   Group,
+  ScrollArea,
   Stack,
   useMantineColorScheme,
 } from "@mantine/core"
@@ -59,12 +60,26 @@ export default function StepperRichTextStep() {
           Download PDF
         </Button>
       </Group>
-      <RichTextEditor
-        value={text}
-        onChange={(value) => {
-          setText(value)
+      <ScrollArea
+        sx={{ height: "70vh" }}
+        scrollbarSize={4}
+        styles={{
+          scrollbar: {
+            '&[data-orientation="vertical"] .mantine-ScrollArea-thumb':
+              {
+                zIndex: 1,
+              },
+          },
         }}
-      />
+      >
+        <RichTextEditor
+          value={text}
+          onChange={(value) => {
+            setText(value)
+          }}
+          sticky
+        />
+      </ScrollArea>
     </Stack>
   )
 }

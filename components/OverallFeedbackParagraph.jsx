@@ -1,4 +1,4 @@
-import { Button, Textarea, useMantineTheme } from "@mantine/core"
+import { Button, Stack, useMantineTheme } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { FiSave as SaveIcon } from "react-icons/fi"
 import RichTextEditor from "./RichTextEditor"
@@ -22,20 +22,22 @@ export default function OverallFeedbackParagraph({
         await addOverallFeedback(overallFeedback)
       }}
     >
-      <RichTextEditor
-        value={overallFeedback}
-        onChange={(value) => setOverallFeedback(value)}
-      />
-      <Button
-        sx={{
-          marginTop: theme.spacing.md,
-          placeSelf: "flex-end",
-        }}
-        leftIcon={<SaveIcon />}
-        type="submit"
-      >
-        Commit
-      </Button>
+      <Stack spacing="xs" align="start">
+        <RichTextEditor
+          value={overallFeedback}
+          onChange={(value) => setOverallFeedback(value)}
+        />
+        <Button
+          sx={{
+            marginTop: theme.spacing.md,
+            alignSelf: "end",
+          }}
+          leftIcon={<SaveIcon strokeWidth="3px" />}
+          type="submit"
+        >
+          Commit
+        </Button>
+      </Stack>
     </form>
   )
 }
