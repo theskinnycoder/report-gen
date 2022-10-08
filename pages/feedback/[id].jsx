@@ -16,8 +16,6 @@ import { TbPlus as PlusIcon } from "react-icons/tb"
 import DidWellParagraph from "~/components/DidWellParagraph"
 import IntroductionParagraph from "~/components/IntroductionParagraph"
 import MistakeParagraph from "~/components/MistakeParagraph"
-import NewDidWellDialog from "~/components/NewDidWellDialog"
-import NewMistakeDialog from "~/components/NewMistakeDialog"
 import OverallFeedbackParagraph from "~/components/OverallFeedbackParagraph"
 import StepperRichTextStep from "~/components/StepperRichTextStep"
 import useFeedBack from "~/hooks/use-feed-back"
@@ -40,10 +38,6 @@ export default function EditFeedbackPage() {
     () => mapJSONtoRichText(document),
     [document],
   )
-
-  const [mistakeDialogOpen, setMistakeDialogOpen] = useState(false)
-  const [didWellDialogOpen, setDidWellDialogOpen] = useState(false)
-  const [dialogClickedArena, setDialogClickedArena] = useState()
 
   const theme = useMantineTheme()
   const [openedEditors, setOpenedEditors] = useState([])
@@ -72,10 +66,17 @@ export default function EditFeedbackPage() {
           >
             <Grid gutter="xs">
               <Grid.Col span={6}>
-                <Paper withBorder p="xl" m="xs">
+                <Paper
+                  withBorder
+                  p="xl"
+                  m="xs"
+                  sx={{
+                    borderWidth: "1.5px",
+                  }}
+                >
                   <ScrollArea
                     sx={{ height: "70vh" }}
-                    scrollbarSize={3}
+                    scrollbarSize={4}
                   >
                     <Accordion
                       value={openedEditors}
@@ -144,13 +145,14 @@ export default function EditFeedbackPage() {
                                     display: "flex",
                                     flexDirection: "column",
                                     alignItems: "stretch",
-                                    gap: theme.spacing.sm,
+                                    gap: theme.spacing.xs,
+                                    borderWidth: "1.5px",
                                   })}
                                 >
-                                  <Title size="h5">Mistakes</Title>
+                                  <Title order={5}>Mistakes</Title>
                                   {document[key]?.mistakes.length >=
                                     1 && (
-                                    <Stack spacing="sm">
+                                    <Stack spacing="xl">
                                       {document[key]?.mistakes.map(
                                         (item, idx) => (
                                           <MistakeParagraph
@@ -177,22 +179,15 @@ export default function EditFeedbackPage() {
                                     color="red.6"
                                     sx={{
                                       borderWidth: "1.5px",
-                                      alignSelf: "flex-start",
+                                      alignSelf: "start",
                                     }}
                                     disabled={loading}
                                     loading={loading}
                                     onClick={async () => {
-                                      const id =
-                                        await addNewParagraph(
-                                          key,
-                                          "mistakes",
-                                        )
-                                      setDialogClickedArena({
-                                        stage: key,
-                                        id,
-                                        type: "mistakes",
-                                      })
-                                      setMistakeDialogOpen(true)
+                                      await addNewParagraph(
+                                        key,
+                                        "mistakes",
+                                      )
                                     }}
                                   >
                                     Add Mistake
@@ -205,15 +200,16 @@ export default function EditFeedbackPage() {
                                     display: "flex",
                                     flexDirection: "column",
                                     alignItems: "stretch",
-                                    gap: theme.spacing.sm,
+                                    gap: theme.spacing.xs,
+                                    borderWidth: "1.5px",
                                   })}
                                 >
-                                  <Title size="h5">
+                                  <Title order={5}>
                                     What you did well
                                   </Title>
                                   {document[key]?.didWell.length >=
                                     1 && (
-                                    <Stack spacing="xs">
+                                    <Stack spacing="xl">
                                       {document[key]?.didWell.map(
                                         (item, idx) => (
                                           <DidWellParagraph
@@ -240,22 +236,15 @@ export default function EditFeedbackPage() {
                                     color="green.7"
                                     sx={{
                                       borderWidth: "1.5px",
-                                      alignSelf: "flex-start",
+                                      alignSelf: "start",
                                     }}
                                     disabled={loading}
                                     loading={loading}
                                     onClick={async () => {
-                                      const id =
-                                        await addNewParagraph(
-                                          key,
-                                          "didWell",
-                                        )
-                                      setDialogClickedArena({
-                                        stage: key,
-                                        id,
-                                        type: "didWell",
-                                      })
-                                      setDidWellDialogOpen(true)
+                                      await addNewParagraph(
+                                        key,
+                                        "didWell",
+                                      )
                                     }}
                                   >
                                     Add What You Did Well
@@ -271,10 +260,17 @@ export default function EditFeedbackPage() {
                 </Paper>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Paper withBorder p="xl" m="xs">
+                <Paper
+                  withBorder
+                  p="xl"
+                  m="xs"
+                  sx={{
+                    borderWidth: "1.5px",
+                  }}
+                >
                   <ScrollArea
                     sx={{ height: "70vh" }}
-                    scrollbarSize={3}
+                    scrollbarSize={4}
                   >
                     <div
                       dangerouslySetInnerHTML={{ __html: richText }}
@@ -292,24 +288,6 @@ export default function EditFeedbackPage() {
           </Stepper.Step>
         </Stepper>
       </Box>
-      <NewMistakeDialog
-        open={mistakeDialogOpen}
-        onClose={() => setMistakeDialogOpen(false)}
-        arena={dialogClickedArena}
-        feedbackId={query.id}
-        removeParagraph={removeParagraph}
-        commitParagraph={commitParagraph}
-        loading={loading}
-      />
-      <NewDidWellDialog
-        open={didWellDialogOpen}
-        onClose={() => setDidWellDialogOpen(false)}
-        arena={dialogClickedArena}
-        feedbackId={query.id}
-        removeParagraph={removeParagraph}
-        commitParagraph={commitParagraph}
-        loading={loading}
-      />
     </>
   )
 }

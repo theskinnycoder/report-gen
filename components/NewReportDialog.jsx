@@ -23,7 +23,7 @@ export default function NewReportDialog({
     <Modal
       opened={open}
       onClose={onClose}
-      title={<Title size="h4">New Report Form</Title>}
+      title={<Title order={3}>New Report Form</Title>}
     >
       <form
         onSubmit={form.onSubmit(async (values) => {
@@ -73,7 +73,7 @@ export default function NewReportDialog({
           size="md"
           type="submit"
           sx={{
-            alignSelf: "flex-end",
+            alignSelf: "end",
           }}
         >
           Create

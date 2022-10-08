@@ -22,7 +22,7 @@ export default function OverallFeedbackParagraph({
         await addOverallFeedback(overallFeedback)
       }}
     >
-      <Stack spacing="xs" align="start">
+      <Stack spacing="xs">
         <RichTextEditor
           value={overallFeedback}
           onChange={(value) => setOverallFeedback(value)}

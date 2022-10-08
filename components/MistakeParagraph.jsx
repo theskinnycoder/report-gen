@@ -1,18 +1,23 @@
 import {
   ActionIcon,
   Button,
+  Divider,
   Group,
+  Radio,
   Stack,
   Text,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core"
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone"
+import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
 import { FiSave as SaveIcon } from "react-icons/fi"
 import {
   HiTrash as TrashIcon,
   HiPencilAlt as EditIcon,
 } from "react-icons/hi"
+import useStorage from "~/hooks/use-storage"
 import RichTextEditor from "./RichTextEditor"
 
 export default function MistakeParagraph({
@@ -22,15 +27,48 @@ export default function MistakeParagraph({
   count,
   loading,
 }) {
-  const [explanationText, setExplanationText] = useState(
-    data.explanationText,
+  const { query } = useRouter()
+  const { uploadImage } = useStorage()
+  const [completeData, setCompleteData] = useState(null)
+  const [radios, setRadios] = useState([])
+  const [versions, setVersions] = useState([])
+
+  const [selectedRadio, setSelectedRadio] = useState(
+    data?.selectedRadio ?? 1,
   )
-  const [overcomeText, setOvercomeText] = useState(data.overcomeText)
+  const [selectedVersion, setSelectedVersion] = useState(
+    data?.selectedVersion ?? 1,
+  )
+
+  const [explanationText, setExplanationText] = useState(
+    data?.explanationText ?? "",
+  )
+  const [overcomeText, setOvercomeText] = useState(
+    data?.overcomeText ?? "",
+  )
+  const [ssFile, setSsFile] = useState(null)
 
   useEffect(() => {
-    setExplanationText(data.explanationText)
-    setOvercomeText(data.overcomeText)
-  }, [data.explanationText, data.overcomeText])
+    ;(async () => {
+      if (data?.stale) {
+        const response = await fetch(
+          `/api/sheets?stage=${data?.section}&feedback_type=mistake`,
+        )
+        const { values } = await response.json()
+        setCompleteData(values)
+        setRadios(values.map((row) => row.checkbox_text))
+        setVersions(
+          Array.from(
+            {
+              length: values[0].explanations.filter((el) => el)
+                .length,
+            },
+            (_v, i) => i + 1,
+          ),
+        )
+      }
+    })()
+  }, [data?.section, data?.stale])
 
   const theme = useMantineTheme()
 
@@ -40,12 +78,24 @@ export default function MistakeParagraph({
         <form
           onSubmit={async (e) => {
             e.preventDefault()
+            let url = data?.screenshot
+            if (ssFile) {
+              url = await uploadImage(
+                query.id,
+                data.section,
+                data.type,
+                data.id,
+                ssFile,
+              )
+            }
             await commitParagraph(data.id, {
               ...data,
-              screenshot: data.screenshot,
+              screenshot: url,
               explanationText,
               overcomeText,
               stale: false,
+              selectedRadio,
+              selectedVersion,
             })
           }}
         >
@@ -53,49 +103,245 @@ export default function MistakeParagraph({
             spacing="md"
             p="md"
             sx={{
+              position: "relative",
               border: "1.5px solid",
               borderColor: theme.colors.red[6],
               borderRadius: theme.radius.sm,
             }}
           >
-            <Stack
-              p="xs"
+            <Group
               sx={{
-                border: "1.5px solid",
-                borderColor: theme.colors.gray,
-                borderRadius: theme.radius.sm,
+                position: "absolute",
+                top: "0px",
+                right: "0px",
+                transform: "translate(50%, -50%)",
               }}
             >
-              <img
-                src={data.screenshot}
-                alt=""
-                style={{
-                  maxWidth: "35vw",
+              <Tooltip label="Delete" withArrow>
+                <ActionIcon
+                  onClick={async () => {
+                    await removeParagraph(
+                      data.section,
+                      data.type,
+                      data.id,
+                    )
+                  }}
+                  radius="xl"
+                  variant="filled"
+                  size="md"
+                  color="red"
+                  loading={loading}
+                  disabled={loading}
+                >
+                  <TrashIcon size={18} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+
+            {/* Screenshot */}
+            <Stack spacing="xs">
+              <Text
+                component="label"
+                size="sm"
+                sx={{
+                  fontWeight: 500,
                 }}
-              />
+              >
+                Screenshot
+              </Text>
+              <Dropzone
+                onDrop={(files) => {
+                  setSsFile(files[0])
+                }}
+                onReject={(files) =>
+                  console.log("rejected files", files)
+                }
+                maxSize={3 * 1024 ** 2}
+                accept={IMAGE_MIME_TYPE}
+                multiple={false}
+                sx={{
+                  width: "100%",
+                }}
+              >
+                {data?.screenshot && !ssFile ? (
+                  <img
+                    src={data?.screenshot}
+                    alt=""
+                    style={{ width: "100%" }}
+                  />
+                ) : (
+                  <>
+                    {ssFile ? (
+                      <img
+                        src={URL.createObjectURL(ssFile)}
+                        alt=""
+                        style={{ width: "100%" }}
+                      />
+                    ) : (
+                      <Group
+                        position="center"
+                        spacing="xl"
+                        style={{
+                          minHeight: 220,
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <Text size="xl" inline>
+                          Drag images here or click to select files
+                        </Text>
+                      </Group>
+                    )}
+                  </>
+                )}
+              </Dropzone>
             </Stack>
 
-            <RichTextEditor
-              value={explanationText}
-              onChange={(value) => setExplanationText(value)}
-            />
+            {(ssFile || data?.screenshot) && (
+              <>
+                <Divider />
+                <Radio.Group
+                  orientation="vertical"
+                  label="Select a suitable explanation for this screenshot"
+                  spacing="sm"
+                  offset="sm"
+                  withAsterisk
+                  value={selectedRadio}
+                  onChange={(value) => {
+                    setSelectedRadio(+value)
+                    setSelectedVersion(1)
+                    setExplanationText(
+                      completeData[+value - 1].explanations[0],
+                    )
+                    setOvercomeText(
+                      completeData[+value - 1].corrections[0],
+                    )
+                    setVersions(
+                      Array.from(
+                        {
+                          length: completeData[
+                            +value - 1
+                          ].explanations.filter((el) => el).length,
+                        },
+                        (_v, i) => i + 1,
+                      ),
+                    )
+                  }}
+                >
+                  {radios.map((radio, idx) => (
+                    <Radio key={idx} value={idx + 1} label={radio} />
+                  ))}
+                </Radio.Group>
+              </>
+            )}
 
-            <RichTextEditor
-              value={overcomeText}
-              onChange={(value) => setOvercomeText(value)}
-            />
+            {(data?.screenshot || ssFile) && selectedRadio && (
+              <>
+                <Divider />
+                <Radio.Group
+                  name="version"
+                  orientation="vertical"
+                  label="Select a version of the paragraph to be populated"
+                  spacing="sm"
+                  offset="sm"
+                  withAsterisk
+                  value={selectedVersion}
+                  onChange={(value) => {
+                    setSelectedVersion(+value)
+                    setExplanationText(
+                      completeData[selectedRadio - 1].explanations[
+                        +value - 1
+                      ],
+                    )
+                    setOvercomeText(
+                      completeData[selectedRadio - 1].corrections[
+                        +value - 1
+                      ],
+                    )
+                  }}
+                >
+                  {versions.map((version) => (
+                    <Radio
+                      key={version}
+                      value={version}
+                      label={version}
+                    />
+                  ))}
+                </Radio.Group>
+              </>
+            )}
 
-            <Button
-              sx={{
-                placeSelf: "flex-end",
-              }}
-              leftIcon={<SaveIcon strokeWidth="3px" />}
-              type="submit"
-              loading={loading}
-              disabled={loading}
-            >
-              Commit
-            </Button>
+            {/* Explanation Text */}
+            {(data?.screenshot || ssFile) &&
+              selectedRadio &&
+              selectedVersion && (
+                <>
+                  <Divider />
+                  <Stack spacing="xs">
+                    <Text
+                      component="label"
+                      size="sm"
+                      sx={{
+                        fontWeight: 500,
+                      }}
+                    >
+                      Explanation Text
+                    </Text>
+                    <RichTextEditor
+                      value={explanationText}
+                      onChange={(value) => setExplanationText(value)}
+                    />
+                  </Stack>
+                </>
+              )}
+
+            {/* Overcome Text */}
+            {(data?.screenshot || ssFile) &&
+              selectedRadio &&
+              selectedVersion && (
+                <>
+                  <Divider />
+                  <Stack spacing="xs">
+                    <Text
+                      component="label"
+                      size="sm"
+                      sx={{
+                        fontWeight: 500,
+                      }}
+                    >
+                      Correction Text
+                    </Text>
+                    <RichTextEditor
+                      value={overcomeText}
+                      onChange={(value) => setOvercomeText(value)}
+                    />
+                  </Stack>
+                </>
+              )}
+
+            <Group position="right" align="center">
+              <Button
+                loading={loading}
+                disabled={loading}
+                variant="default"
+                color="gray"
+                onClick={async () => {
+                  await commitParagraph(data.id, {
+                    ...data,
+                    stale: false,
+                  })
+                }}
+              >
+                Nevermind
+              </Button>
+              <Button
+                leftIcon={<SaveIcon strokeWidth="3px" />}
+                type="submit"
+                loading={loading}
+                disabled={loading}
+              >
+                Commit
+              </Button>
+            </Group>
           </Stack>
         </form>
       ) : (

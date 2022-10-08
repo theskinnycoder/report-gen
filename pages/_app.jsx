@@ -10,6 +10,7 @@ import {
   Header,
   MantineProvider,
   Title,
+  Tooltip,
 } from "@mantine/core"
 import { NextLink } from "@mantine/next"
 import { NotificationsProvider } from "@mantine/notifications"
@@ -78,7 +79,7 @@ export default function App(props) {
                     <Title
                       component={NextLink}
                       href="/"
-                      size="h4"
+                      order={4}
                       sx={{
                         fontWeight: "bold",
                         letterSpacing: "0.5",
@@ -86,20 +87,26 @@ export default function App(props) {
                     >
                       DT Reviews
                     </Title>
-                    <ActionIcon
-                      size="lg"
-                      variant="light"
-                      radius="md"
-                      onClick={() => setOpenSettingsDialog(true)}
-                      sx={(theme) => ({
-                        border: "1.5px solid transparent",
-                        ":hover": {
-                          borderColor: theme.colors[colorTheme][6],
-                        },
-                      })}
+                    <Tooltip
+                      label="Open Settings"
+                      withArrow
+                      position="left"
                     >
-                      <SettingsIcon size="20" />
-                    </ActionIcon>
+                      <ActionIcon
+                        size="lg"
+                        variant="light"
+                        radius="md"
+                        onClick={() => setOpenSettingsDialog(true)}
+                        sx={(theme) => ({
+                          border: "1.5px solid transparent",
+                          ":hover": {
+                            borderColor: theme.colors[colorTheme][6],
+                          },
+                        })}
+                      >
+                        <SettingsIcon size="20" />
+                      </ActionIcon>
+                    </Tooltip>
                   </Group>
                 </Header>
               }
