@@ -7,6 +7,7 @@ import {
   SimpleGrid,
   Stack,
   Title,
+  Tooltip,
   useMantineColorScheme,
 } from "@mantine/core"
 import Link from "next/link"
@@ -33,7 +34,7 @@ export default function Home() {
       <Stack spacing="xl" p="lg" my="xl">
         <Button
           sx={{
-            justifySelf: "flex-start",
+            justifySelf: "start",
             width: "fit-content",
           }}
           mb="xl"
@@ -87,18 +88,20 @@ export default function Home() {
                         <VisitIcon />
                       </ActionIcon>
                     </Link>
-                    <ActionIcon
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setSelectedToDelete(doc)
-                      }}
-                      color="red"
-                      variant={
-                        colorScheme === "dark" ? "light" : "subtle"
-                      }
-                    >
-                      <TrashIcon />
-                    </ActionIcon>
+                    <Tooltip label="Delete" withArrow>
+                      <ActionIcon
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setSelectedToDelete(doc)
+                        }}
+                        color="red"
+                        variant={
+                          colorScheme === "dark" ? "light" : "subtle"
+                        }
+                      >
+                        <TrashIcon />
+                      </ActionIcon>
+                    </Tooltip>
                   </Group>
                 </Group>
               </Paper>

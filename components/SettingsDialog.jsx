@@ -35,7 +35,13 @@ export default function SettingsDialog({
         component="button"
         onClick={() => setTheme(color)}
         color={theme.colors[color][6]}
-        sx={{ color: "#fff", cursor: "pointer" }}
+        sx={{
+          color: colorScheme === "dark" ? "#fff" : "#000",
+          cursor: "pointer",
+          border: `2px solid ${
+            colorScheme === "dark" ? "#fff" : "#000"
+          }`,
+        }}
       >
         {colorTheme === color && <CheckIcon width={10} />}
       </ColorSwatch>
@@ -49,7 +55,7 @@ export default function SettingsDialog({
       onClose={onClose}
       size="lg"
     >
-      <Stack spacing="xl" align="start">
+      <Stack spacing="xl">
         <Group align="center" position="left">
           <Title order={6}>Color Mode</Title>
           <SegmentedControl
@@ -79,7 +85,7 @@ export default function SettingsDialog({
         </Group>
         <Stack spacing="xs">
           <Title order={6}>Color Theme</Title>
-          <Group position="center" spacing="xs">
+          <Group position="left" spacing="xs">
             {swatches}
           </Group>
         </Stack>

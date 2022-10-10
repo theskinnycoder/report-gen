@@ -22,7 +22,7 @@ export default function IntroductionParagraph({
         await addIntroduction(introduction)
       }}
     >
-      <Stack spacing="xs" align="start">
+      <Stack spacing="xs">
         <RichTextEditor
           value={introduction}
           onChange={(value) => setIntroduction(value)}
@@ -30,7 +30,7 @@ export default function IntroductionParagraph({
         <Button
           sx={{
             marginTop: theme.spacing.md,
-            alignSelf: "flex-end",
+            alignSelf: "end",
           }}
           leftIcon={<SaveIcon strokeWidth="3px" />}
           type="submit"
